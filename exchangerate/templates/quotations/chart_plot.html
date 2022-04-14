@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="title has-text-centered">Cotação do Dólar (USD)</h1>
+    <div class="columns">
+        <div class="column is-4">
+            <div class="columns is-mobile">
+                <div class="column is-4">
+                    <p>
+                        Dólar (USD)
+                    </p>
+                </div>
+                <div class="column is-2">
+                    <a href="">
+                        <span class="icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </span>
+                    </a>
+                </div>
+                <div class="column is-6">
+                    <div class="control has-icons-left ">
+                        <span class="icon is-left">
+                            <i class="fas fa-coins"></i>
+                        </span>
+                        <div class="select">
+                            <select>
+                                <option>Euro (EUR)</option>
+                                <option>Iene (JPY)</option>
+                                <option>Real (BRL)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column">
+                    <p>
+                        Da data
+                    </p>
+                </div>
+                <div class="column">
+                    <div class="control">
+                        <input class="input" type="date">
+                    </div>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column">
+                    <p>
+                        Até a data
+                    </p>
+                </div>
+                <div class="column">
+                    <div class="control">
+                        <input class="input" type="date">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="column">
+            <div id="dolarChart">
+
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(()=>{
+            plotDolarChart();
+        });
+
+        function plotDolarChart() {
+            Highcharts.chart('dolarChart', {
+                chart: {
+                    type: 'spline',
+                    scrollablePlotArea: {
+                        minWidth: 600,
+                        scrollPositionX: 1
+                    }
+                },
+                title: {
+                    text: '',
+                    align: 'left'
+                },
+                subtitle: {
+                    text: '',
+                    align: 'left'
+                },
+                xAxis: {
+                    type: 'datetime',
+                    labels: {
+                        overflow: 'justify'
+                    }
+                },
+                yAxis: {
+                    title: {
+                    text: ''
+                    },
+                    minorGridLineWidth: 0,
+                    gridLineWidth: 0,
+                    alternateGridColor: null,
+                    plotBands: []
+                },
+                tooltip: {
+                    valueSuffix: ' $'
+                },
+                plotOptions: {
+                    spline: {
+                    lineWidth: 3,
+                    states: {
+                        hover: {
+                            lineWidth: 5
+                        }
+                    },
+                    marker: {
+                        enabled: false
+                    },
+                    pointInterval: 86400000, // one day
+                    pointStart: Date.UTC(2022, 04, 08, 0, 0, 0)
+                    }
+                },
+                series: [
+                    {
+                        name: '',
+                        data: [
+                            4.65, 4.66, 4.70, 4.71, 4.67, 4.69
+                        ]
+
+                    }
+                ],
+                navigation: {
+                    menuItemStyle: {
+                        fontSize: '10px'
+                    }
+                }
+            });
+        }
+    </script>
+{% endblock %}
