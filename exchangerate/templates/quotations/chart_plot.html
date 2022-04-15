@@ -159,65 +159,67 @@
             let selCurr = $('#currencies').find(":selected").val();
 
             Highcharts.chart('dolarChart', {
-                chart: {
-                    type: 'spline',
-                    scrollablePlotArea: {
-                        minWidth: 300,
-                        scrollPositionX: 1
-                    }
-                },
+
                 title: {
-                    text: '',
-                    align: 'left'
+                    text: ''
                 },
+
                 subtitle: {
-                    text: '',
-                    align: 'left'
+                    text: ''
                 },
-                xAxis: {
-                    type: 'datetime',
-                    labels: {
-                        overflow: 'justify'
-                    }
-                },
+
                 yAxis: {
                     title: {
-                    text: ''
+                        text: 'USD $'
+                    }
+                },
+
+                xAxis: {
+                    type: 'datetime',
+                    startOnTick: false,
+                    endOnTick: false,
+                    showLastLabel: true,
+                    labels: {
+                        rotation: -45
                     },
-                    minorGridLineWidth: 0,
-                    gridLineWidth: 0,
-                    alternateGridColor: null,
-                    plotBands: []
                 },
                 tooltip: {
                     valuePrefix: selCurr == "BRL" ? 'R$ ' : (selCurr == "JPY" ? '¥ ' : selCurr == "EUR" ? '€ ' : "")
                 },
+
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle'
+                },
+
                 plotOptions: {
-                    spline: {
-                    lineWidth: 3,
-                    states: {
-                        hover: {
-                            lineWidth: 5
-                        }
-                    },
-                    marker: {
-                        enabled: false
-                    },
-                    pointInterval: 86400000, // one day
-                    pointStart: Date.UTC(initialDate.substr(0,4), initialDate.substr(5,2) -1, initialDate.substr(8,2), 0, 0, 0)
+                    series: {
+                        pointInterval: 86400000, // one day
+                        pointStart: Date.UTC(initialDate.substr(0,4), initialDate.substr(5,2) -1, initialDate.substr(8,2), 0, 0, 0)
                     }
                 },
-                series: [
-                    {
-                        name: '',
-                        data: chartData
-                    }
-                ],
-                navigation: {
-                    menuItemStyle: {
-                        fontSize: '10px'
-                    }
+
+                series: [{
+                    name: selCurr == "BRL" ? 'Real' : (selCurr == "JPY" ? 'Iene' : selCurr == "EUR" ? 'Euro' : ""),
+                    data: chartData
+                }],
+
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
                 }
+
             });
         }
     </script>
