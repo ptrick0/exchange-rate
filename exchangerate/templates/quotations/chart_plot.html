@@ -25,10 +25,10 @@
                                 <i class="fas fa-coins"></i>
                             </span>
                             <div class="select">
-                                <select>
-                                    <option>Euro (EUR)</option>
-                                    <option>Iene (JPY)</option>
-                                    <option>Real (BRL)</option>
+                                <select id="currencies">
+                                    <option value="EUR">Euro (EUR)</option>
+                                    <option value="JPY">Iene (JPY)</option>
+                                    <option selected value="BRL">Real (BRL)</option>
                                 </select>
                             </div>
                         </div>
@@ -43,7 +43,7 @@
                     </div>
                     <div class="level-item">
                         <div class="control">
-                            <input class="input" type="date">
+                            <input class="input" id="iniDate" type="date">
                         </div>
                     </div>
                     <div class="level-item">
@@ -53,8 +53,15 @@
                     </div>
                     <div class="level-item">
                         <div class="control">
-                            <input class="input" type="date">
+                            <input class="input" id="finDate" type="date">
                         </div>
+                    </div>
+                    <div class="level-item">
+                        <button class="button" id="btnRefresh" onclick="getQuotationByDates()">
+                            <span class="icon">
+                                <i class="fas fa-redo-alt"></i>
+                            </span>
+                        </button>
                     </div>
                 </div>
             </nav>
@@ -64,12 +71,93 @@
             <div id="dolarChart"></div>
         </div>
     </div>
+
+    <!-- Modals -->
+    <div class="modal" id="modal-info">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title" id="modal-info-title">Teste</p>
+                <button class="delete" aria-label="close" onclick="modalInfo('close')"></button>
+            </header>
+            <section class="modal-card-body">
+                <p id="modal-info-body">Message</p>
+            </section>
+            <footer class="modal-card-foot">
+                <button class="button is-info" onclick="modalInfo('close')">Ok</button>
+            </footer>
+        </div>
+    </div>
+
     <script>
+        function modalInfo(openClose, id=0) {
+            let modal = document.getElementById("modal-info");
+
+            if(openClose == 'open') {
+                modal.classList.add("is-active");
+            } else if(openClose == 'close') {
+                modal.classList.remove("is-active");
+            }
+        }
+
+        function getQuotationByDates() {
+            let iniDate = $("#iniDate").val();
+            let finDate = $("#finDate").val();
+            let selCurr = $('#currencies').find(":selected").val();
+
+            $("#btnRefresh").addClass("is-loading");
+
+            $.ajax({
+                type: "POST",
+                url: '{% url "quotation_by_dates" %}',
+                data: {csrfmiddlewaretoken: '{{ csrf_token }}',
+                    initialDate: iniDate,
+                    finalDate: finDate,
+                    currency: selCurr},
+                success: function(response){
+                    let modalTitle = document.getElementById("modal-info-title");
+                    let modalBody = document.getElementById("modal-info-body");
+                    let quotations = JSON.parse(response);
+
+                    modalTitle.innerHTML = "Sucesso";
+                    modalBody.innerHTML = "Consulta realizada com sucesso";
+
+                    console.log(typeof(quotations))
+                    plotDolarChart(quotations);
+
+                    modalInfo('open');
+                },
+                error: function(response){
+                    let modalTitle = document.getElementById("modal-info-title");
+                    let modalBody = document.getElementById("modal-info-body");
+
+                    modalTitle.innerHTML = "Falha";
+                    modalBody.innerHTML = "Problema na consulta. Verifique as datas e tente novamente";
+
+                    modalInfo('open');
+                },
+                complete: function(response){
+                    $("#btnRefresh").removeClass("is-loading");
+                }
+            });
+        }
+
         $(document).ready(()=>{
-            plotDolarChart();
+            let today = new Date();
+            let fiveDaysBefore = new Date();
+
+            fiveDaysBefore.setDate(fiveDaysBefore.getDate() - 4);
+
+            $("#iniDate").val(fiveDaysBefore.getFullYear() + "-" + ("00" + (fiveDaysBefore.getMonth() + 1)).slice(-2) + "-" + ("00" + fiveDaysBefore.getDate()).slice(-2));
+            $("#finDate").val(today.getFullYear() + "-" + ("00" + (today.getMonth() + 1)).slice(-2) + "-" + ("00" + today.getDate()).slice(-2));
+
+            getQuotationByDates();
         });
 
-        function plotDolarChart() {
+        function plotDolarChart(chartData) {
+            let initialDate = $("#iniDate").val();
+            let selCurr = $('#currencies').find(":selected").val();
+
             Highcharts.chart('dolarChart', {
                 chart: {
                     type: 'spline',
@@ -102,7 +190,7 @@
                     plotBands: []
                 },
                 tooltip: {
-                    valueSuffix: ' $'
+                    valuePrefix: selCurr == "BRL" ? 'R$ ' : (selCurr == "JPY" ? '¥ ' : selCurr == "EUR" ? '€ ' : "")
                 },
                 plotOptions: {
                     spline: {
@@ -116,16 +204,13 @@
                         enabled: false
                     },
                     pointInterval: 86400000, // one day
-                    pointStart: Date.UTC(2022, 04, 08, 0, 0, 0)
+                    pointStart: Date.UTC(initialDate.substr(0,4), initialDate.substr(5,2) -1, initialDate.substr(8,2), 0, 0, 0)
                     }
                 },
                 series: [
                     {
                         name: '',
-                        data: [
-                            4.65, 4.66, 4.70, 4.71, 4.67, 4.69
-                        ]
-
+                        data: chartData
                     }
                 ],
                 navigation: {
