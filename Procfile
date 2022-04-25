@@ -1,1 +1,1 @@
-web: python exchange/manage.py runserver 0.0.0.0:\$PORT
+web: python exchangerate/manage.py runserver 0.0.0.0:\$PORT
