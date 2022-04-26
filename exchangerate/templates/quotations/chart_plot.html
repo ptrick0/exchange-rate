@@ -108,7 +108,7 @@
             $("#btnRefresh").addClass("is-loading");
 
             $.ajax({
-                type: "POST",
+                method: "POST",
                 url: '{% url "quotation_by_dates" %}',
                 data: {csrfmiddlewaretoken: '{{ csrf_token }}',
                     initialDate: iniDate,
