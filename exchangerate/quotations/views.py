@@ -6,6 +6,14 @@ import json
 from .models import UsdQuotation
 from .forms import UsdQuotationForm
 
+from .serializers import UsdQuotationSerializer
+from rest_framework import viewsets
+
+class UsdQuotationViewSet(viewsets.ModelViewSet):
+  queryset = UsdQuotation.objects.all()
+  serializer_class = UsdQuotationSerializer
+
+
 def index(request):
     return render(request, "quotations/chart_plot.html", context = {})
 

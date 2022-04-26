@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'django-insecure-xubsk8f(3stxpva^_&a#@h_9ejzrpp6gvn+(@%!-nsp6&gdd77'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['https://ptrick0-exchange-rate.herokuapp.com']
 CSRF_TRUSTED_ORIGINS = ['https://ptrick0-exchange-rate.herokuapp.com']
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'quotations'
 ]
 
