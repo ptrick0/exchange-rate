@@ -15,8 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from quotations import views
 
-urlpatterns = [
-    path('', include('quotations.urls')),
-    path('admin/', admin.site.urls),
+router = DefaultRouter(trailing_slash=False)
+router.register(r'quotations', views.UsdQuotationViewSet)
+
+urlpatterns = [ 
+    path('', include('quotations.urls')), 
+    path('api/', include(router.urls)),
+    path('admin/', admin.site.urls)
 ]
