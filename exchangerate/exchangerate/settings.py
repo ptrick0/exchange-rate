@@ -25,8 +25,8 @@ SECRET_KEY = 'django-insecure-xubsk8f(3stxpva^_&a#@h_9ejzrpp6gvn+(@%!-nsp6&gdd77
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['ptrick0-exchange-rate.herokuapp.com']
-CSRF_TRUSTED_ORIGINS = ['ptrick0-exchange-rate.herokuapp.com']
+ALLOWED_HOSTS = ['https://ptrick0-exchange-rate.herokuapp.com']
+CSRF_TRUSTED_ORIGINS = ['https://ptrick0-exchange-rate.herokuapp.com']
 
 # Application definition
 
